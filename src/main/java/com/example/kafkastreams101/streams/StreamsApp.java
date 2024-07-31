@@ -1,6 +1,7 @@
 package com.example.kafkastreams101.streams;
 
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
@@ -20,11 +21,11 @@ public class StreamsApp {
 
     @Bean
     public KStream<String, String> filterStream() throws IOException {
-        Properties streamsProp = getClusterProperties();
+        Properties streamsProps = getClusterProperties();
 
         StreamsBuilder builder = new StreamsBuilder();
-        final String inputTopic = streamsProp.getProperty("test.input.topic");
-        final String outputTopic = streamsProp.getProperty("test.output.topic");
+        final String inputTopic = streamsProps.getProperty("test.input.topic");
+        final String outputTopic = streamsProps.getProperty("test.output.topic");
 
         KStream<String,String> stream = builder.stream(inputTopic, Consumed.with(Serdes.String(),Serdes.String()));
 
@@ -33,6 +34,10 @@ public class StreamsApp {
             .filter((key, value) -> value != null && value.contains(FILTER_PREFIX) )
             .peek(((key, value) -> System.out.println("Output: " + key + " - "+ value)))
             .to(outputTopic, Produced.with(Serdes.String(),Serdes.String()));
+
+
+        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), streamsProps);
+        kafkaStreams.start();
 
         return stream;
     }
