@@ -16,20 +16,15 @@ public class TopicLoader {
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
-        try(Admin adminClient = Admin.create(properties);
-            Producer<String, String> producer = new KafkaProducer<>(properties)) {
+        try (Producer<String, String> producer = new KafkaProducer<>(properties)) {
             final String inputTopic = properties.getProperty("test.input.topic");
-            final String outputTopic = properties.getProperty("test.output.topic");
-            var topics = List.of(StreamsUtils.createTopic(inputTopic), StreamsUtils.createTopic(outputTopic));
-            adminClient.createTopics(topics);
 
             Callback callback = (metadata, exception) -> {
-                if(exception != null) {
+                if (exception != null) {
                     System.out.printf("Producing records encountered error %s %n", exception);
                 } else {
                     System.out.printf("Record produced - offset - %d timestamp - %d %n", metadata.offset(), metadata.timestamp());
                 }
-
             };
 
             var rawRecords = List.of("orderNumber-1001",
@@ -39,7 +34,7 @@ public class TopicLoader {
                     "bogus-1",
                     "bogus-2",
                     "orderNumber-8400");
-            var producerRecords = rawRecords.stream().map(r -> new ProducerRecord<>(inputTopic,"order-key", r)).collect(Collectors.toList());
+            var producerRecords = rawRecords.stream().map(r -> new ProducerRecord<>(inputTopic, "order-key", r)).collect(Collectors.toList());
             producerRecords.forEach((pr -> producer.send(pr, callback)));
         }
     }

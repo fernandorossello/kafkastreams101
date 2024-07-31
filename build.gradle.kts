@@ -22,6 +22,7 @@ dependencies {
     implementation("org.apache.kafka:kafka-streams:3.5.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.awaitility:awaitility:4.2.1")
 }
 
 tasks.withType<Test> {

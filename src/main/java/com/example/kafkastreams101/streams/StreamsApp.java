@@ -20,12 +20,12 @@ public class StreamsApp {
     public static final String FILTER_PREFIX = "orderNumber-";
 
     @Bean
-    public KStream<String, String> filterStream() throws IOException {
+    public KafkaStreams filterStream() throws IOException {
         Properties streamsProps = getClusterProperties();
 
         StreamsBuilder builder = new StreamsBuilder();
-        final String inputTopic = streamsProps.getProperty("test.input.topic");
-        final String outputTopic = streamsProps.getProperty("test.output.topic");
+        final String inputTopic = streamsProps.getProperty("kafka.basic.filter.input.topic");
+        final String outputTopic = streamsProps.getProperty("kafka.basic.filter.output.topic");
 
         KStream<String,String> stream = builder.stream(inputTopic, Consumed.with(Serdes.String(),Serdes.String()));
 
@@ -39,7 +39,7 @@ public class StreamsApp {
         KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), streamsProps);
         kafkaStreams.start();
 
-        return stream;
+        return kafkaStreams;
     }
 
 
