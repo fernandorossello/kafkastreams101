@@ -11,13 +11,12 @@ import java.util.stream.Collectors;
 
 public class TopicLoader {
 
-    public static void runProducer() throws IOException {
+    public static void runProducer(String inputTopic) throws IOException {
         Properties properties = StreamsUtils.loadProperties();
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
         try (Producer<String, String> producer = new KafkaProducer<>(properties)) {
-            final String inputTopic = properties.getProperty("test.input.topic");
 
             Callback callback = (metadata, exception) -> {
                 if (exception != null) {
