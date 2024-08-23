@@ -3,6 +3,7 @@ package com.example.kafkastreams101;
 import com.example.kafkastreams101.streams.TopicLoader;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
@@ -39,6 +40,8 @@ public class Kafkastreams101Application {
             stream
                 .peek(((key, value) -> System.out.println("Input: " + key + " - " + value)))
                 .filter((key, value) -> value != null && value.contains(FILTER_PREFIX))
+                .mapValues(value -> value.replaceAll(FILTER_PREFIX,"Fer test mapping -"))
+                .map((key,value) -> KeyValue.pair("New key",value))
                 .peek(((key, value) -> System.out.println("Output: " + key + " - " + value)))
                 .to(outputTopic, Produced.with(Serdes.String(), Serdes.String()));
 
