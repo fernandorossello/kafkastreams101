@@ -1,6 +1,5 @@
-package com.example.kafkastreams101.streams;
+package com.example.kafkastreams101.helper;
 
-import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 

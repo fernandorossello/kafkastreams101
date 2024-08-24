@@ -1,6 +1,7 @@
-package com.example.kafkastreams101;
+package com.example.kafkastreams101.streams;
 
-import com.example.kafkastreams101.streams.TopicLoader;
+import com.example.kafkastreams101.helper.AdminConfig;
+import com.example.kafkastreams101.helper.TopicLoader;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
@@ -9,17 +10,17 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 @SpringBootApplication
 public class Kafkastreams101Application {
 
-    public static final String FILTER_PREFIX = "orderNumber-";
+    private static final String FILTER_PREFIX = "orderNumber-";
 
     public static void main(String[] args) {
         try {
@@ -32,8 +33,9 @@ public class Kafkastreams101Application {
 
 
             StreamsBuilder builder = new StreamsBuilder();
-            final String inputTopic = streamsProps.getProperty("kafka.basic.filter.input.topic");
-            final String outputTopic = streamsProps.getProperty("kafka.basic.filter.output.topic");
+            final String inputTopic = streamsProps.getProperty("kafka.input.topic");
+            final String outputTopic = streamsProps.getProperty("kafka.output.topic");
+            AdminConfig.createTopics(List.of(inputTopic,outputTopic));
 
             KStream<String, String> stream = builder.stream(inputTopic, Consumed.with(Serdes.String(), Serdes.String()));
 

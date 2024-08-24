@@ -1,6 +1,4 @@
-package com.example.kafkastreams101.streams;
-
-import org.apache.kafka.clients.admin.NewTopic;
+package com.example.kafkastreams101.helper;
 
 import java.io.FileInputStream;
 import java.io.IOException;
